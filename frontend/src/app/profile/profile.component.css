@@ -1,0 +1,131 @@
+.profile-shell {
+  display: grid;
+  gap: 24px;
+}
+
+.profile-header {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.profile-header img {
+  width: 72px;
+  height: 72px;
+  border-radius: 24px;
+  object-fit: cover;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.stat-card {
+  background: var(--surface-card);
+  padding: 18px;
+  border-radius: 16px;
+  box-shadow: var(--shadow-soft);
+}
+
+.stat-card .value {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.chart-card {
+  background: var(--surface-card);
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: var(--shadow-soft);
+}
+
+.chart {
+  display: grid;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.chart-row {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  align-items: center;
+  gap: 12px;
+}
+
+.chart-label {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.chart-track {
+  background: rgba(31, 74, 158, 0.1);
+  border-radius: 999px;
+  height: 28px;
+  overflow: hidden;
+}
+
+.chart-bar {
+  height: 100%;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 12px;
+  color: #fff;
+  font-weight: 700;
+  min-width: 28px;
+  width: 0;
+  animation: grow-bar 0.8s ease forwards;
+}
+
+.chart-bar.given {
+  background: linear-gradient(90deg, #1f4a9e, #3d74db);
+}
+
+.chart-bar.received {
+  background: linear-gradient(90deg, #0ea5e9, #38bdf8);
+}
+
+@keyframes grow-bar {
+  from {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  to {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+}
+
+.badge-shelf {
+  background: var(--surface-card);
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: var(--shadow-soft);
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.badge {
+  background: rgba(31, 74, 158, 0.12);
+  padding: 10px 14px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.badge .count {
+  font-weight: 700;
+}
+
+.highlight mat-card {
+  border-radius: 16px;
+}

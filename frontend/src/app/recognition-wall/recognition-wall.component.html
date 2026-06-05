@@ -1,0 +1,74 @@
+<section class="wall-header">
+  <div>
+    <h2>Recognition Wall</h2>
+    <p>Celebrate the latest wins across Econet.</p>
+  </div>
+  <div class="spotlight">
+    <span>⭐ Most Recognised This Week</span>
+    <strong>{{ spotlightName }}</strong>
+  </div>
+</section>
+
+<section class="filters">
+  <mat-form-field appearance="outline">
+    <mat-label>Badge</mat-label>
+    <mat-select [formControl]="badgeFilter" (selectionChange)="applyFilters()">
+      <mat-option value="">All badges</mat-option>
+      <mat-option *ngFor="let badge of badges" [value]="badge.name">{{ badge.name }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Department</mat-label>
+    <input matInput [formControl]="departmentFilter" (input)="applyFilters()" placeholder="Search department" />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Time range</mat-label>
+    <mat-select [formControl]="timeRangeFilter" (selectionChange)="applyFilters()">
+      <mat-option value="week">This week</mat-option>
+      <mat-option value="month">This month</mat-option>
+      <mat-option value="all">All time</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Search person</mat-label>
+    <input matInput [formControl]="searchFilter" (input)="applyFilters()" placeholder="Search by name" />
+  </mat-form-field>
+</section>
+
+<section class="wall-feed" *ngIf="recognitions.length">
+  <cdk-virtual-scroll-viewport itemSize="240" class="wall-viewport" (scrolledIndexChange)="loadMore($event)">
+    <div class="recognition-card" *cdkVirtualFor="let recognition of visibleRecognitions">
+      <div class="card-header">
+        <div class="person">
+          <img [src]="avatarUrl(recognition.senderName, recognition.senderPhotoUrl)" alt="Sender" />
+          <div>
+            <div class="name">{{ recognition.senderName }}</div>
+            <div class="meta">to {{ recognition.receiverName }}</div>
+          </div>
+        </div>
+        <span class="time">{{ timeAgo(recognition.date) }}</span>
+      </div>
+      <div class="badge">
+        <span class="emoji">{{ recognition.badge.emoji }}</span>
+        <span class="label">{{ recognition.badge.name }}</span>
+      </div>
+      <p class="message">{{ recognition.message }}</p>
+      <div class="reactions">
+        <button mat-button (click)="addReaction(recognition, 'clap')">👏 {{ recognition.reactions.clap || 0 }}</button>
+        <button mat-button (click)="addReaction(recognition, 'trophy')">🏆 {{ recognition.reactions.trophy || 0 }}</button>
+        <button mat-button (click)="addReaction(recognition, 'heart')">❤️ {{ recognition.reactions.heart || 0 }}</button>
+      </div>
+    </div>
+  </cdk-virtual-scroll-viewport>
+</section>
+
+<section class="empty" *ngIf="!recognitions.length && !loading">
+  <img src="assets/empty-state.svg" alt="Empty" />
+  <h3>No recognitions yet</h3>
+  <p>Be the first to recognise a teammate today.</p>
+  <a mat-raised-button color="primary" routerLink="/recognize">Start Recognising</a>
+</section>
+
+<section class="loading" *ngIf="loading">
+  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+</section>

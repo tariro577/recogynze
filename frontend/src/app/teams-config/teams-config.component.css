@@ -1,0 +1,14 @@
+.config-shell {
+  background: var(--surface-card);
+  padding: 24px;
+  border-radius: 20px;
+  box-shadow: var(--shadow-soft);
+  display: grid;
+  gap: 16px;
+  max-width: 520px;
+}
+
+.status {
+  color: #16a34a;
+  font-weight: 500;
+}

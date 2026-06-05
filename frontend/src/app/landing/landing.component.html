@@ -1,0 +1,48 @@
+<section class="hero">
+  <div class="hero-content">
+    <p class="eyebrow">Econet Employee Recognition</p>
+    <h1>Recognise. Celebrate. Inspire.</h1>
+    <p class="subtitle">
+      Celebrate the moments that move our teams forward. Send meaningful recognition, spark momentum, and keep the
+      Econet culture shining.
+    </p>
+    <div class="hero-actions">
+      <a mat-raised-button color="primary" routerLink="/recognize">Start Recognising</a>
+      <a mat-stroked-button routerLink="/wall">Explore the Wall</a>
+    </div>
+  </div>
+  <div class="hero-card">
+    <div class="stat" *ngIf="!loading && stats">
+      <h3>Total recognitions sent</h3>
+      <div class="value">{{ stats.totalRecognitions | number }}</div>
+    </div>
+    <div class="stat" *ngIf="!loading && stats">
+      <h3>Most used badge this week</h3>
+      <div class="value">{{ stats.mostUsedBadge }}</div>
+    </div>
+    <div class="stat" *ngIf="!loading && stats">
+      <h3>Most recognised employee</h3>
+      <div class="value">{{ stats.mostRecognisedEmployee }}</div>
+    </div>
+    <div class="stat" *ngIf="loading">
+      <mat-progress-spinner mode="indeterminate" diameter="32"></mat-progress-spinner>
+      <p>Loading live stats...</p>
+    </div>
+  </div>
+</section>
+
+<section class="highlight">
+  <div class="highlight-card">
+    <h2>Make recognition feel effortless</h2>
+    <p>
+      Choose a badge, personalise the message, and send instant appreciation in under 30 seconds. Every recognition
+      lives on the wall for your team to celebrate.
+    </p>
+  </div>
+  <div class="highlight-card">
+    <h2>Celebrate wins in real time</h2>
+    <p>
+      Get notified the moment new recognitions land. Cheer them on with reactions and keep the momentum growing.
+    </p>
+  </div>
+</section>

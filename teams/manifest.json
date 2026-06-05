@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.14/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.14",
+  "version": "1.0.0",
+  "id": "00000000-0000-0000-0000-000000000000",
+  "packageName": "com.example.recognyze",
+  "developer": {
+    "name": "Econet Digital",
+    "websiteUrl": "https://econetzimbabwe.com",
+    "privacyUrl": "https://econetzimbabwe.com/privacy",
+    "termsOfUseUrl": "https://econetzimbabwe.com/terms"
+  },
+  "name": {
+    "short": "Recognyze",
+    "full": "Recognyze Employee Recognition"
+  },
+  "description": {
+    "short": "An employee recognition platform.",
+    "full": "Recognyze is an employee recognition platform that allows users to recognize and celebrate their colleagues' achievements."
+  },
+  "icons": {
+    "outline": "outline.png",
+    "color": "color.png"
+  },
+  "accentColor": "#1F4A9E",
+  "staticTabs": [
+    {
+      "entityId": "recognyze-home",
+      "name": "Recognyze",
+      "contentUrl": "https://YOUR_FRONTEND_DOMAIN/",
+      "websiteUrl": "https://YOUR_FRONTEND_DOMAIN/",
+      "scopes": ["personal"]
+    }
+  ],
+  "configurableTabs": [
+    {
+      "configurationUrl": "https://YOUR_FRONTEND_DOMAIN/config",
+      "canUpdateConfiguration": true,
+      "scopes": ["team"]
+    }
+  ],
+  "permissions": [
+    "identity",
+    "messageTeamMembers"
+  ],
+  "validDomains": [
+    "YOUR_FRONTEND_DOMAIN",
+    "YOUR_BACKEND_DOMAIN",
+    "login.microsoftonline.com",
+    "graph.microsoft.com"
+  ],
+  "webApplicationInfo": {
+  "id": "00000000-0000-0000-0000-000000000000",
+    "resource": "https://YOUR_BACKEND_DOMAIN"
+  }
+}

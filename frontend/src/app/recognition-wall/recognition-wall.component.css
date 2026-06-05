@@ -1,0 +1,121 @@
+.wall-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.spotlight {
+  background: rgba(255, 193, 7, 0.15);
+  padding: 12px 18px;
+  border-radius: 16px;
+  font-weight: 600;
+  color: #9a6b00;
+  display: grid;
+  gap: 4px;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.wall-feed {
+  height: 70vh;
+  background: var(--surface-card);
+  border-radius: 20px;
+  padding: 10px 0;
+  box-shadow: var(--shadow-soft);
+}
+
+.wall-viewport {
+  height: 100%;
+  padding: 0 20px 20px;
+}
+
+.recognition-card {
+  background: var(--surface-raised);
+  border-radius: 18px;
+  padding: 18px;
+  margin: 14px 0;
+  box-shadow: var(--shadow-soft);
+  display: grid;
+  gap: 12px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.person {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.person img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.badge {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  font-weight: 600;
+}
+
+.badge .emoji {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(31, 74, 158, 0.12);
+  display: grid;
+  place-items: center;
+  animation: bounce 2s infinite;
+}
+
+.message {
+  color: var(--text-primary);
+}
+
+.reactions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.empty {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  gap: 12px;
+  margin-top: 40px;
+}
+
+.empty img {
+  width: 180px;
+}
+
+.loading {
+  display: grid;
+  place-items: center;
+  padding: 40px 0;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}

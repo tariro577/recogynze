@@ -1,0 +1,87 @@
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --color-primary: #1f4a9e;
+    --color-primary-dark: #12306d;
+    --surface-background: #f3f6ff;
+    --surface-card: #ffffff;
+    --surface-raised: #f8f9ff;
+    --text-primary: #1f2937;
+    --text-secondary: #64748b;
+    --shadow-soft: 0 16px 32px rgba(31, 74, 158, 0.12);
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--surface-background);
+    color: var(--text-primary);
+}
+
+body.theme-dark {
+    --surface-background: #0f172a;
+    --surface-card: #1e293b;
+    --surface-raised: #24324a;
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5f5;
+    --shadow-soft: 0 18px 32px rgba(15, 23, 42, 0.4);
+}
+
+h1, h2, h3 {
+    margin: 0;
+    color: inherit;
+}
+
+p {
+    margin: 0;
+    color: var(--text-secondary);
+}
+
+a {
+    text-decoration: none;
+}
+
+mat-card {
+    background: var(--surface-card) !important;
+    color: var(--text-primary);
+}
+
+mat-form-field {
+    width: 100%;
+}
+
+/* Page transitions: each routed component host is recreated on navigation,
+   so animating the host gives a smooth entrance for every page. */
+app-landing,
+app-recognition-form,
+app-recognition-wall,
+app-profile,
+app-leaderboard,
+app-teams-config {
+    display: block;
+    animation: route-enter 0.4s ease both;
+}
+
+@keyframes route-enter {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+    }
+}

@@ -1,0 +1,68 @@
+<section class="leaderboard-shell" *ngIf="stats">
+  <div class="top-row">
+    <div class="leader-card">
+      <h3>🏆 Top Recogniser of the Week</h3>
+      <div class="leader" *ngIf="stats.topRecogniser">
+        <img [src]="avatarUrl(stats.topRecogniser.name, stats.topRecogniser.photoUrl)" alt="Top recogniser" />
+        <div>
+          <strong>{{ stats.topRecogniser.name }}</strong>
+          <p>{{ stats.topRecogniser.recognitionsGiven }} recognitions sent</p>
+        </div>
+      </div>
+    </div>
+    <div class="leader-card">
+      <h3>⭐ Most Recognised Employee</h3>
+      <div class="leader" *ngIf="stats.mostRecognised">
+        <img [src]="avatarUrl(stats.mostRecognised.name, stats.mostRecognised.photoUrl)" alt="Most recognised" />
+        <div>
+          <strong>{{ stats.mostRecognised.name }}</strong>
+          <p>{{ stats.mostRecognised.recognitionsReceived }} recognitions received</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="breakdown">
+    <h3>Badge breakdown per person</h3>
+    <div class="breakdown-grid">
+      <div class="breakdown-card" *ngFor="let entry of [stats.topRecogniser, stats.mostRecognised]">
+        <h4>{{ entry?.name }}</h4>
+        <div class="badge-row" *ngFor="let badge of entry?.badgeBreakdown | keyvalue">
+          <span>{{ badge.key }}</span>
+          <span class="count">{{ badge.value }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="department">
+    <h3>Department vs Department</h3>
+    <div class="department-row" *ngFor="let dept of stats.departmentStats">
+      <span>{{ dept.department }}</span>
+      <div class="bars">
+        <div class="sent" [style.width.%]="dept.sent"></div>
+        <div class="received" [style.width.%]="dept.received"></div>
+      </div>
+      <span>{{ dept.sent }} / {{ dept.received }}</span>
+    </div>
+  </div>
+
+  <div class="reset">
+    <span class="trophy">🏆</span>
+    <div>
+      <strong>Weekly reset in 2 days</strong>
+      <p>Keep recognising to keep the trophy glowing!</p>
+    </div>
+  </div>
+</section>
+
+<section class="empty" *ngIf="stats && !stats.topRecogniser && !stats.mostRecognised">
+  <img src="assets/empty-state.svg" alt="No leaderboard data yet" />
+  <h3>The leaderboard is warming up</h3>
+  <p>No recognitions this week yet — send one to claim the top spot.</p>
+  <a mat-raised-button color="primary" routerLink="/recognize">Start Recognising</a>
+</section>
+
+<section class="loading" *ngIf="!stats">
+  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+</section>

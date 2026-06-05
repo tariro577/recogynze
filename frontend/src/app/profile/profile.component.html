@@ -1,0 +1,68 @@
+<section class="profile-shell" *ngIf="profile">
+  <div class="profile-header">
+    <img [src]="avatarUrl()" alt="Profile" />
+    <div>
+      <h2>{{ profile.displayName }}</h2>
+      <p>{{ profile.department }}</p>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <h3>Recognitions given</h3>
+      <div class="value">{{ recognitionsGiven }}</div>
+    </div>
+    <div class="stat-card">
+      <h3>Recognitions received</h3>
+      <div class="value">{{ recognitionsReceived }}</div>
+    </div>
+    <div class="stat-card">
+      <h3>Recognition streak</h3>
+      <div class="value">{{ streak }} days</div>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <h3>Given vs received</h3>
+    <div class="chart">
+      <div class="chart-row">
+        <span class="chart-label">Given</span>
+        <div class="chart-track">
+          <div class="chart-bar given" [style.width.%]="barWidth(recognitionsGiven)">
+            <span *ngIf="recognitionsGiven">{{ recognitionsGiven }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="chart-row">
+        <span class="chart-label">Received</span>
+        <div class="chart-track">
+          <div class="chart-bar received" [style.width.%]="barWidth(recognitionsReceived)">
+            <span *ngIf="recognitionsReceived">{{ recognitionsReceived }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="badge-shelf">
+    <h3>Badges earned</h3>
+    <div class="badges">
+      <div class="badge" *ngFor="let badge of badges">
+        <span class="count">{{ badge.count }}</span>
+        <span>{{ badge.name }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="highlight" *ngIf="highlight">
+    <h3>My highlight</h3>
+    <mat-card>
+      <mat-card-title>{{ highlight.badge.name }}</mat-card-title>
+      <mat-card-content>{{ highlight.message }}</mat-card-content>
+    </mat-card>
+  </div>
+</section>
+
+<section class="empty" *ngIf="!profile">
+  <p>Loading profile...</p>
+</section>

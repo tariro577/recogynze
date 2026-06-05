@@ -1,0 +1,33 @@
+<mat-toolbar class="app-toolbar">
+  <div class="brand">
+    <span class="brand-mark">R</span>
+    <span class="brand-text">Recognyze</span>
+  </div>
+  <nav class="nav-links">
+    <a mat-button routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Landing</a>
+    <a mat-button routerLink="/recognize" routerLinkActive="active">Recognise</a>
+    <a mat-button routerLink="/wall" routerLinkActive="active">Wall</a>
+    <a mat-button routerLink="/profile" routerLinkActive="active">My Profile</a>
+    <a mat-button routerLink="/leaderboard" routerLinkActive="active">Leaderboard</a>
+  </nav>
+  <span class="spacer"></span>
+  <div class="toolbar-actions">
+    <button mat-icon-button (click)="toggleTheme()" [matTooltip]="isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'">
+      <mat-icon>{{ isDarkMode ? 'dark_mode' : 'light_mode' }}</mat-icon>
+    </button>
+    <mat-slide-toggle color="primary" [checked]="soundEnabled" (change)="toggleSound($event.checked)">
+      Sound
+    </mat-slide-toggle>
+    <div class="user-pill" *ngIf="profile">
+      <img [src]="profile.photoUrl" alt="Profile" />
+      <div>
+        <div class="name">{{ profile.displayName }}</div>
+        <div class="dept">{{ profile.department }}</div>
+      </div>
+    </div>
+  </div>
+</mat-toolbar>
+
+<main class="app-shell">
+  <router-outlet></router-outlet>
+</main>

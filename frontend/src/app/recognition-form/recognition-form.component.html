@@ -1,0 +1,55 @@
+<section class="form-shell">
+  <div class="form-header">
+    <h2>Send recognition</h2>
+    <p>Pick a colleague, choose a badge, and make it meaningful.</p>
+  </div>
+
+  <form class="form-card" [formGroup]="form">
+    <mat-form-field appearance="outline">
+      <mat-label>Recognise</mat-label>
+      <input matInput [formControl]="receiverControl" [matAutocomplete]="auto" placeholder="Search Econet colleagues" />
+      <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayPerson">
+        <mat-option *ngFor="let person of filteredPeople$ | async" [value]="person">
+          <div class="person-option">
+            <img [src]="person.photoUrl" alt="Avatar" />
+            <div>
+              <div class="name">{{ person.displayName }}</div>
+              <div class="meta">{{ person.department }}</div>
+            </div>
+          </div>
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <div class="badge-grid">
+      <div
+        class="badge-card"
+        *ngFor="let badge of badges"
+        [class.active]="badgeControl.value?.name === badge.name"
+        (click)="selectBadge(badge)"
+      >
+        <div class="emoji" [style.background]="badge.color">{{ badge.emoji }}</div>
+        <div class="label">{{ badge.name }}</div>
+        <div class="desc">{{ badge.description }}</div>
+      </div>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Recognition message</mat-label>
+      <textarea matInput rows="5" [formControl]="messageControl"></textarea>
+      <mat-hint align="end">{{ characterCount }}/{{ maxCharacters }}</mat-hint>
+    </mat-form-field>
+
+    <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+    <button mat-raised-button color="primary" (click)="submit()">Send Recognition</button>
+  </form>
+
+  <div class="confetti" *ngIf="confettiActive">
+    <span
+      *ngFor="let piece of confettiPieces; let i = index"
+      [style.animationDelay]="i * 0.1 + 's'"
+      [style.left.%]="5 + i * 5"
+    ></span>
+  </div>
+</section>
