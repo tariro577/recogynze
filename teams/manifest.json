@@ -2,8 +2,8 @@
   "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.14/MicrosoftTeams.schema.json",
   "manifestVersion": "1.14",
   "version": "1.0.0",
-  "id": "00000000-0000-0000-0000-000000000000",
-  "packageName": "com.example.recognyze",
+  "id": "8868741b-f101-469a-9829-d445dfae0c7f",
+  "packageName": "com.econet.recognyze",
   "developer": {
     "name": "Econet Digital",
     "websiteUrl": "https://econetzimbabwe.com",
@@ -27,14 +27,14 @@
     {
       "entityId": "recognyze-home",
       "name": "Recognyze",
-      "contentUrl": "https://YOUR_FRONTEND_DOMAIN/",
-      "websiteUrl": "https://YOUR_FRONTEND_DOMAIN/",
+      "contentUrl": "https://recogynze.vercel.app/",
+      "websiteUrl": "https://recogynze.vercel.app/",
       "scopes": ["personal"]
     }
   ],
   "configurableTabs": [
     {
-      "configurationUrl": "https://YOUR_FRONTEND_DOMAIN/config",
+      "configurationUrl": "https://recogynze.vercel.app/config",
       "canUpdateConfiguration": true,
       "scopes": ["team"]
     }
@@ -44,13 +44,13 @@
     "messageTeamMembers"
   ],
   "validDomains": [
-    "YOUR_FRONTEND_DOMAIN",
-    "YOUR_BACKEND_DOMAIN",
+    "recogynze.vercel.app",
+    "recogynze-api.vercel.app",
     "login.microsoftonline.com",
     "graph.microsoft.com"
   ],
   "webApplicationInfo": {
-  "id": "00000000-0000-0000-0000-000000000000",
-    "resource": "https://YOUR_BACKEND_DOMAIN"
+    "id": "YOUR_CLIENT_ID",
+    "resource": "api://recogynze.vercel.app/YOUR_CLIENT_ID"
   }
 }

@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://YOUR_BACKEND_API_URL/api',
+  apiBaseUrl: 'https://recogynze-api.vercel.app/api',
   azure: {
     clientId: 'YOUR_CLIENT_ID',
     tenantId: 'YOUR_TENANT_ID',
@@ -10,7 +10,7 @@ export const environment = {
     //  - Passthrough mode: use the Graph scopes the backend forwards.
     //  - OBO mode: use your exposed API scope, e.g. ['api://YOUR_CLIENT_ID/access_as_user'].
     apiScopes: ['User.Read', 'Sites.ReadWrite.All', 'User.ReadBasic.All'],
-    redirectUri: 'https://YOUR_FRONTEND_STATIC_APP_URL'
+    redirectUri: 'https://recogynze.vercel.app'
   },
   sharepoint: {
     siteUrl: 'https://econetzimbabwe.sharepoint.com/sites/recognyze'
