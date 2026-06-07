@@ -1,35 +1,40 @@
-import { Router, Response, NextFunction } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import {
   addReaction,
   createRecognition,
   getBadges,
   getLeaderboard,
-  getMe,
   getRecognitions,
   getStats,
+  listEmployees,
   searchUsers
-} from '../services/graph';
+} from '../services/data';
 import { containsAppearanceComment } from '../utils/moderation';
 import { ReactionType } from '../types';
-import { authenticate, AuthenticatedRequest } from '../auth';
 
 const router = Router();
 
 /** Wrap async handlers so rejected promises reach the error middleware instead of hanging. */
 const handle =
-  (fn: (req: AuthenticatedRequest, res: Response) => Promise<unknown>) =>
-  (req: AuthenticatedRequest, res: Response, next: NextFunction) =>
+  (fn: (req: Request, res: Response) => Promise<unknown>) =>
+  (req: Request, res: Response, next: NextFunction) =>
     fn(req, res).catch(next);
 
 const VALID_REACTIONS: ReactionType[] = ['clap', 'trophy', 'heart'];
 
-router.use(authenticate);
+/**
+ * Identity comes from the Teams client (getContext) and is sent by the frontend.
+ * This is a low-stakes internal recognition wall, so we trust the client-asserted
+ * identity rather than requiring Azure AD / admin consent. Header first, body fallback.
+ */
+const callerEmail = (req: Request): string =>
+  String(req.header('x-user-email') || req.body?.senderEmail || '').trim();
 
 router.get(
   '/recognitions',
   handle(async (req, res) => {
     const { skip, top, badge, department, timeRange, search } = req.query;
-    const recognitions = await getRecognitions(req.accessToken!, {
+    const recognitions = await getRecognitions({
       skip: Number(skip || 0),
       top: Number(top || 20),
       badge: badge ? String(badge) : undefined,
@@ -44,12 +49,16 @@ router.get(
 router.post(
   '/recognitions',
   handle(async (req, res) => {
-    const payload = req.body;
-    if (!payload?.receiverEmail || !payload?.badgeName || !payload?.message) {
+    const body = req.body || {};
+    if (!body.senderEmail || !body.senderName) {
+      res.status(400).json({ message: 'Sender identity is missing.' });
+      return;
+    }
+    if (!body.receiverEmail || !body.badgeName || !body.message) {
       res.status(400).json({ message: 'receiverEmail, badgeName and message are required.' });
       return;
     }
-    if (containsAppearanceComment(payload.message)) {
+    if (containsAppearanceComment(body.message)) {
       res.status(400).json({
         message:
           'Recognition should celebrate professional contributions, not appearance. Please focus on their work and impact!'
@@ -57,9 +66,16 @@ router.post(
       return;
     }
 
-    const sender = await getMe(req.accessToken!);
-    const newRecognition = await createRecognition(req.accessToken!, payload, sender);
-    res.status(201).json(newRecognition);
+    const created = await createRecognition({
+      senderName: body.senderName,
+      senderEmail: body.senderEmail,
+      receiverName: body.receiverName,
+      receiverEmail: body.receiverEmail,
+      badgeName: body.badgeName,
+      message: body.message,
+      department: body.department || 'General'
+    });
+    res.status(201).json(created);
   })
 );
 
@@ -72,30 +88,30 @@ router.post(
       res.status(400).json({ message: `Reaction type must be one of: ${VALID_REACTIONS.join(', ')}` });
       return;
     }
-    const user = await getMe(req.accessToken!);
-    await addReaction(req.accessToken!, id, type, user.id);
+    const email = callerEmail(req) || 'anonymous';
+    await addReaction(id, type, email);
     res.status(204).send();
   })
 );
 
 router.get(
   '/badges',
-  handle(async (req, res) => {
-    res.status(200).json(await getBadges(req.accessToken!));
+  handle(async (_req, res) => {
+    res.status(200).json(await getBadges());
   })
 );
 
 router.get(
   '/stats',
-  handle(async (req, res) => {
-    res.status(200).json(await getStats(req.accessToken!));
+  handle(async (_req, res) => {
+    res.status(200).json(await getStats());
   })
 );
 
 router.get(
   '/leaderboard',
-  handle(async (req, res) => {
-    res.status(200).json(await getLeaderboard(req.accessToken!));
+  handle(async (_req, res) => {
+    res.status(200).json(await getLeaderboard());
   })
 );
 
@@ -103,18 +119,7 @@ router.get(
   '/users/search',
   handle(async (req, res) => {
     const query = String(req.query.query || '').trim();
-    if (!query) {
-      res.status(200).json([]);
-      return;
-    }
-    res.status(200).json(await searchUsers(req.accessToken!, query));
-  })
-);
-
-router.get(
-  '/me',
-  handle(async (req, res) => {
-    res.status(200).json(await getMe(req.accessToken!));
+    res.status(200).json(query ? await searchUsers(query) : await listEmployees());
   })
 );
 

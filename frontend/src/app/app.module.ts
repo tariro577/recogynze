@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { MsalModule, MsalRedirectComponent } from '@azure/msal-angular';
 
 import { AppComponent } from './app.component';
 import { LandingComponent } from './landing/landing.component';
@@ -13,8 +12,6 @@ import { ProfileComponent } from './profile/profile.component';
 import { LeaderboardComponent } from './leaderboard/leaderboard.component';
 import { TeamsConfigComponent } from './teams-config/teams-config.component';
 import { AppRoutingModule } from './app-routing.module';
-import { msalInstanceFactory, msalGuardConfigFactory } from './auth-config';
-import { MSAL_GUARD_CONFIG, MSAL_INSTANCE, MsalGuard, MsalService } from '@azure/msal-angular';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -53,7 +50,6 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     ReactiveFormsModule,
     HttpClientModule,
     AppRoutingModule,
-    MsalModule,
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
@@ -74,18 +70,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     MatDividerModule,
     ScrollingModule
   ],
-  providers: [
-    {
-      provide: MSAL_INSTANCE,
-      useFactory: msalInstanceFactory
-    },
-    {
-      provide: MSAL_GUARD_CONFIG,
-      useFactory: msalGuardConfigFactory
-    },
-    MsalService,
-    MsalGuard
-  ],
-  bootstrap: [AppComponent, MsalRedirectComponent]
+  providers: [],
+  bootstrap: [AppComponent]
 })
 export class AppModule { }

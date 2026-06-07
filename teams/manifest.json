@@ -45,12 +45,6 @@
   ],
   "validDomains": [
     "recogynze.vercel.app",
-    "recogynze-api.vercel.app",
-    "login.microsoftonline.com",
-    "graph.microsoft.com"
-  ],
-  "webApplicationInfo": {
-    "id": "YOUR_CLIENT_ID",
-    "resource": "api://recogynze.vercel.app/YOUR_CLIENT_ID"
-  }
+    "recogynze-api.vercel.app"
+  ]
 }

@@ -1,19 +1,18 @@
 import dotenv from 'dotenv';
 import { createApp } from './server';
-import { getConfig, validateConfig } from './config';
+import { getConfig } from './config';
+import { getStore } from './store';
 
 dotenv.config();
 
-try {
-  validateConfig();
-} catch (error) {
-  // eslint-disable-next-line no-console
-  console.error(`[recognyze] startup failed: ${(error as Error).message}`);
-  process.exit(1);
-}
-
 const { port } = getConfig();
 const app = createApp();
+
+// Warm the store (creates tables / seeds) so the first request isn't slow.
+getStore().catch(err => {
+  // eslint-disable-next-line no-console
+  console.error('[recognyze] store init failed:', (err as Error).message);
+});
 
 app.listen(port, () => {
   // eslint-disable-next-line no-console

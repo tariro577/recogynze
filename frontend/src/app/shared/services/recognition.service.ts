@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ApiService } from './api.service';
+import { AuthService } from './auth.service';
 import { Badge, LeaderboardStats, Recognition, RecognitionFilters, RecognitionPayload, RecognitionStats, UserProfile } from '../models';
 
 const DEFAULT_BADGES: Badge[] = [
@@ -51,7 +52,7 @@ const DEFAULT_BADGES: Badge[] = [
 
 @Injectable({ providedIn: 'root' })
 export class RecognitionService {
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService, private auth: AuthService) {}
 
   getBadges(): Observable<Badge[]> {
     return this.api.get<Badge[]>('/badges').pipe(catchError(() => of(DEFAULT_BADGES)));
@@ -69,7 +70,13 @@ export class RecognitionService {
   }
 
   createRecognition(payload: RecognitionPayload): Observable<Recognition> {
-    return this.api.post<Recognition>('/recognitions', payload);
+    // Sender identity comes from the Teams context (no login required).
+    const sender = this.auth.currentProfile();
+    return this.api.post<Recognition>('/recognitions', {
+      ...payload,
+      senderName: sender.displayName,
+      senderEmail: sender.email
+    });
   }
 
   getStats(): Observable<RecognitionStats> {
