@@ -37,4 +37,8 @@ export interface Store {
   addReaction(recognitionId: string, userEmail: string, type: ReactionType): Promise<void>;
   listEmployees(): Promise<UserProfile[]>;
   searchEmployees(query: string): Promise<UserProfile[]>;
+  /** Replace the entire employee directory (admin). */
+  setEmployees(employees: UserProfile[]): Promise<void>;
+  /** Remove all recognitions and reactions (admin — e.g. clearing test data). */
+  clearRecognitions(): Promise<void>;
 }

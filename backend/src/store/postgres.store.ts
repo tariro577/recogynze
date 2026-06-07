@@ -113,6 +113,20 @@ export class PostgresStore implements Store {
     return rows.map(this.toProfile);
   }
 
+  async setEmployees(employees: UserProfile[]): Promise<void> {
+    await sql`TRUNCATE employees`;
+    for (const e of employees) {
+      await sql`
+        INSERT INTO employees (email, name, department)
+        VALUES (${e.email}, ${e.displayName}, ${e.department || 'General'})
+        ON CONFLICT (email) DO UPDATE SET name = EXCLUDED.name, department = EXCLUDED.department`;
+    }
+  }
+
+  async clearRecognitions(): Promise<void> {
+    await sql`TRUNCATE recognitions, reactions RESTART IDENTITY`;
+  }
+
   private toProfile = (row: any): UserProfile => ({
     id: row.email,
     displayName: row.name,

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { debounceTime, switchMap } from 'rxjs/operators';
+import { debounceTime, startWith, switchMap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { RecognitionService } from '../shared/services/recognition.service';
 import { Badge, RecognitionPayload, UserProfile } from '../shared/models';
@@ -52,10 +52,12 @@ export class RecognitionFormComponent implements OnInit {
     });
 
     this.filteredPeople$ = this.receiverControl.valueChanges.pipe(
+      startWith(''),
       debounceTime(300),
       switchMap((value: string | UserProfile | null) => {
-        if (!value || typeof value === 'string') {
-          return value ? this.recognitionService.searchUsers(value) : of([]);
+        // Empty box -> list everyone; typing -> search; a picked person -> no list.
+        if (value === null || value === '' || typeof value === 'string') {
+          return this.recognitionService.searchUsers(typeof value === 'string' ? value : '');
         }
         return of([]);
       })
@@ -99,6 +101,13 @@ export class RecognitionFormComponent implements OnInit {
     const receiver = this.receiverControl.value as UserProfile;
     const badge = this.badgeControl.value as Badge;
 
+    // The receiver must be picked from the dropdown (an object with an email),
+    // not just typed as free text — otherwise we have no one to send it to.
+    if (!receiver || typeof receiver === 'string' || !receiver.email) {
+      this.errorMessage = 'Please choose a colleague from the list. Start typing their name and select them from the dropdown.';
+      return;
+    }
+
     const payload: RecognitionPayload = {
       receiverEmail: receiver.email,
       receiverName: receiver.displayName,
@@ -114,8 +123,8 @@ export class RecognitionFormComponent implements OnInit {
         this.badgeControl.setValue(badge);
         this.applyBadgeTemplate(badge);
       },
-      error: () => {
-        this.errorMessage = 'Something went wrong sending recognition. Please try again.';
+      error: (err: { error?: { message?: string } }) => {
+        this.errorMessage = err?.error?.message || 'Something went wrong sending recognition. Please try again.';
       }
     });
   }

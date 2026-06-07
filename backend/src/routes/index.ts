@@ -1,16 +1,18 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import {
   addReaction,
+  clearRecognitions,
   createRecognition,
   getBadges,
   getLeaderboard,
   getRecognitions,
   getStats,
   listEmployees,
-  searchUsers
+  searchUsers,
+  setEmployees
 } from '../services/data';
 import { containsAppearanceComment } from '../utils/moderation';
-import { ReactionType } from '../types';
+import { ReactionType, UserProfile } from '../types';
 
 const router = Router();
 
@@ -120,6 +122,51 @@ router.get(
   handle(async (req, res) => {
     const query = String(req.query.query || '').trim();
     res.status(200).json(query ? await searchUsers(query) : await listEmployees());
+  })
+);
+
+// ---- Admin (token-guarded) ----
+// Enabled only when ADMIN_TOKEN is set. Lets an operator manage the employee
+// directory and clear test data without any direct database access.
+const adminGuard = (req: Request, res: Response, next: NextFunction) => {
+  const token = process.env.ADMIN_TOKEN;
+  if (!token) {
+    return res.status(404).json({ message: 'Not found' });
+  }
+  if (req.header('x-admin-token') !== token) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+  return next();
+};
+
+router.post(
+  '/admin/reset',
+  adminGuard,
+  handle(async (_req, res) => {
+    await clearRecognitions();
+    res.status(200).json({ ok: true, message: 'All recognitions and reactions cleared.' });
+  })
+);
+
+router.post(
+  '/admin/employees',
+  adminGuard,
+  handle(async (req, res) => {
+    const input = Array.isArray(req.body?.employees) ? req.body.employees : [];
+    const employees: UserProfile[] = input
+      .filter((e: any) => e?.email && e?.name)
+      .map((e: any) => ({
+        id: String(e.email),
+        displayName: String(e.name),
+        email: String(e.email),
+        department: e.department ? String(e.department) : 'General'
+      }));
+    if (!employees.length) {
+      res.status(400).json({ message: 'Provide employees: [{ name, email, department? }]' });
+      return;
+    }
+    await setEmployees(employees);
+    res.status(200).json({ ok: true, count: employees.length });
   })
 );
 

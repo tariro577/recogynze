@@ -100,3 +100,13 @@ export const listEmployees = async (): Promise<UserProfile[]> => {
   const store = await getStore();
   return (await store.listEmployees()).map(withAvatar);
 };
+
+export const setEmployees = async (employees: UserProfile[]): Promise<void> => {
+  const store = await getStore();
+  await store.setEmployees(employees);
+};
+
+export const clearRecognitions = async (): Promise<void> => {
+  const store = await getStore();
+  await store.clearRecognitions();
+};

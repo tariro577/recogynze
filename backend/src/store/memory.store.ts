@@ -56,4 +56,13 @@ export class MemoryStore implements Store {
       .filter(e => e.displayName.toLowerCase().includes(q) || e.email.toLowerCase().includes(q))
       .slice(0, 15);
   }
+
+  async setEmployees(employees: UserProfile[]): Promise<void> {
+    this.employees = employees.map(e => ({ ...e }));
+  }
+
+  async clearRecognitions(): Promise<void> {
+    this.recognitions = [];
+    this.reactionKeys.clear();
+  }
 }
