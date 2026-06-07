@@ -22,6 +22,20 @@ import {
   sortNewestFirst
 } from './aggregations';
 
+/**
+ * The six built-in badges. Used when no Badges list is configured, so the app
+ * runs with only the Recognitions list. They map a recognition's Badge name to
+ * its emoji / colour / template for display.
+ */
+const DEFAULT_BADGES: Badge[] = [
+  { name: 'Teamwork', emoji: '🤝', color: '#3B82F6', description: 'Celebrate collaboration and support.', template: 'Thank you for always showing up for the team. The way you [add specific action] made a real difference...' },
+  { name: 'Innovation', emoji: '💡', color: '#FBBF24', description: 'Celebrate fresh thinking and creativity.', template: 'Your creative thinking on [project] was outstanding. You brought a fresh perspective by...' },
+  { name: 'Leadership', emoji: '⭐', color: '#A855F7', description: 'Recognise strong guidance.', template: 'You led by example when [situation]. Your guidance helped the team...' },
+  { name: 'Goes the Extra Mile', emoji: '🎯', color: '#F97316', description: 'Celebrate dedication beyond expectations.', template: 'You went above and beyond by [action]. This level of dedication is what makes our team exceptional...' },
+  { name: 'Resilience', emoji: '💪', color: '#22C55E', description: 'Celebrate perseverance under pressure.', template: 'Even under pressure you [action]. Your ability to stay focused and deliver is truly inspiring...' },
+  { name: 'Excellence', emoji: '🌟', color: '#0EA5E9', description: 'Recognise high-quality execution.', template: 'The quality of your work on [project] set the bar for all of us. You consistently deliver...' }
+];
+
 const getGraphClient = (accessToken: string) =>
   Client.init({
     authProvider: (done: (err: unknown, token: string | null) => void) => {
@@ -109,6 +123,9 @@ export const getMe = async (accessToken: string): Promise<UserProfile> => {
 
 export const getBadges = async (accessToken: string): Promise<Badge[]> => {
   const { badgesListId, siteId } = getConfig();
+  if (!badgesListId) {
+    return DEFAULT_BADGES;
+  }
   return badgeCache.get(async () => {
     const client = getGraphClient(accessToken);
     const items = await fetchAllItems(client, `/sites/${siteId}/lists/${badgesListId}`);
@@ -126,6 +143,9 @@ export const getBadges = async (accessToken: string): Promise<Badge[]> => {
 /** Read the Reactions list and aggregate into per-recognition counts (the source of truth). */
 const getReactionsByRecognition = async (client: Client): Promise<Record<string, ReactionCounts>> => {
   const { reactionsListId, siteId } = getConfig();
+  if (!reactionsListId) {
+    return {};
+  }
   const items = await fetchAllItems(client, `/sites/${siteId}/lists/${reactionsListId}`);
   return aggregateReactions(
     items.map((item: any) => ({ RecognitionId: item.fields?.RecognitionId, Type: item.fields?.Type }))
@@ -221,6 +241,10 @@ export const addReaction = async (
   userId: string
 ): Promise<void> => {
   const { reactionsListId, siteId } = getConfig();
+  if (!reactionsListId) {
+    // No Reactions list configured — reactions are disabled, so this is a no-op.
+    return;
+  }
   const client = getGraphClient(accessToken);
 
   // Best-effort dedupe: one reaction of each type per user per recognition.

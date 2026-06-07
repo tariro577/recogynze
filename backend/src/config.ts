@@ -1,7 +1,9 @@
 /**
- * Centralised, validated configuration. Reading SharePoint requires a site id and
- * three list ids; if any are missing we fail loudly with a clear message instead of
- * issuing Graph calls against empty paths and returning opaque 500s at runtime.
+ * Centralised, validated configuration. The app only requires a site id and the
+ * Recognitions list id. The Badges and Reactions lists are optional:
+ *  - No Badges list  -> the six built-in badges are used.
+ *  - No Reactions list -> the 👏🏆❤️ reaction buttons are disabled (counts stay 0).
+ * Required values fail loudly at boot; optional ones are simply left undefined.
  */
 /**
  * Optional Azure AD settings. When all are present the backend becomes a real
@@ -22,8 +24,8 @@ export interface AppConfig {
   corsOrigins: string[];
   siteId: string;
   recognitionsListId: string;
-  badgesListId: string;
-  reactionsListId: string;
+  badgesListId?: string;
+  reactionsListId?: string;
   authMode: 'obo' | 'passthrough';
   aad?: AadConfig;
 }
@@ -68,8 +70,8 @@ export const getConfig = (): AppConfig => {
       .filter(Boolean),
     siteId: required('RECOGNYZE_SITE_ID'),
     recognitionsListId: required('RECOGNYZE_RECOGNITIONS_LIST_ID'),
-    badgesListId: required('RECOGNYZE_BADGES_LIST_ID'),
-    reactionsListId: required('RECOGNYZE_REACTIONS_LIST_ID'),
+    badgesListId: process.env.RECOGNYZE_BADGES_LIST_ID?.trim() || undefined,
+    reactionsListId: process.env.RECOGNYZE_REACTIONS_LIST_ID?.trim() || undefined,
     authMode: aad ? 'obo' : 'passthrough',
     aad
   };
