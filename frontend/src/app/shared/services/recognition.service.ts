@@ -7,46 +7,39 @@ import { Badge, LeaderboardStats, Recognition, RecognitionFilters, RecognitionPa
 
 const DEFAULT_BADGES: Badge[] = [
   {
-    name: 'Teamwork',
-    description: 'Celebrate collaboration and support.',
-    template: 'Thank you for always showing up for the team. The way you [add specific action] made a real difference...',
+    name: 'Challenging the Process',
+    description: 'Seeking new ways to improve and taking smart risks.',
+    template: 'Thank you for challenging the status quo when [situation]. Your willingness to try a new approach made a real difference...',
+    emoji: '🚀',
+    color: '#F97316'
+  },
+  {
+    name: 'Enabling Others to Act',
+    description: 'Building trust and empowering the team.',
+    template: 'You empowered the team by [action]. The way you built trust and brought people together...',
     emoji: '🤝',
     color: '#3B82F6'
   },
   {
-    name: 'Innovation',
-    description: 'Celebrate fresh thinking and creativity.',
-    template: 'Your creative thinking on [project] was outstanding. You brought a fresh perspective by...',
-    emoji: '💡',
-    color: '#FBBF24'
+    name: 'Encouraging the Heart',
+    description: 'Uplifting, appreciating and celebrating others.',
+    template: 'You lifted the team when [situation]. Your appreciation and support meant so much...',
+    emoji: '❤️',
+    color: '#EF4444'
   },
   {
-    name: 'Leadership',
-    description: 'Recognise strong guidance.',
-    template: 'You led by example when [situation]. Your guidance helped the team...',
-    emoji: '⭐',
+    name: 'Inspiring a Shared Vision',
+    description: 'Painting a compelling picture of the future.',
+    template: 'You inspired us with your vision for [project/goal]. The way you helped everyone see what is possible...',
+    emoji: '🔭',
     color: '#A855F7'
   },
   {
-    name: 'Goes the Extra Mile',
-    description: 'Celebrate dedication beyond expectations.',
-    template: 'You went above and beyond by [action]. This level of dedication is what makes our team exceptional...',
-    emoji: '🎯',
-    color: '#F97316'
-  },
-  {
-    name: 'Resilience',
-    description: 'Celebrate perseverance under pressure.',
-    template: 'Even under pressure you [action]. Your ability to stay focused and deliver is truly inspiring...',
-    emoji: '💪',
-    color: '#22C55E'
-  },
-  {
-    name: 'Excellence',
-    description: 'Recognise high-quality execution.',
-    template: 'The quality of your work on [project] set the bar for all of us. You consistently deliver...',
-    emoji: '🌟',
-    color: '#0EA5E9'
+    name: 'Modelling the Way',
+    description: 'Leading by example and setting the standard.',
+    template: 'You led by example when [situation]. Your standards and integrity set the bar for all of us...',
+    emoji: '🧭',
+    color: '#14B8A6'
   }
 ];
 
