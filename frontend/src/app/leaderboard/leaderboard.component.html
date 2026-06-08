@@ -35,18 +35,6 @@
     </div>
   </div>
 
-  <div class="department">
-    <h3>Department vs Department</h3>
-    <div class="department-row" *ngFor="let dept of stats.departmentStats">
-      <span>{{ dept.department }}</span>
-      <div class="bars">
-        <div class="sent" [style.width.%]="dept.sent"></div>
-        <div class="received" [style.width.%]="dept.received"></div>
-      </div>
-      <span>{{ dept.sent }} / {{ dept.received }}</span>
-    </div>
-  </div>
-
   <div class="reset">
     <span class="trophy">🏆</span>
     <div>
