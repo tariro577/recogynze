@@ -9,35 +9,35 @@ const DEFAULT_BADGES: Badge[] = [
   {
     name: 'Challenging the Process',
     description: 'Seeking new ways to improve and taking smart risks.',
-    template: 'Thank you for challenging the status quo when [situation]. Your willingness to try a new approach made a real difference...',
+    template: 'Thank you for challenging the process. You questioned how things are done and tried a better way when [describe the situation]. Your courage to experiment made a real impact.',
     emoji: '🚀',
     color: '#F97316'
   },
   {
     name: 'Enabling Others to Act',
     description: 'Building trust and empowering the team.',
-    template: 'You empowered the team by [action]. The way you built trust and brought people together...',
+    template: 'Thank you for enabling others to act. You built trust and gave the team what we needed to succeed when [describe the situation]. Because of you, we delivered together.',
     emoji: '🤝',
     color: '#3B82F6'
   },
   {
     name: 'Encouraging the Heart',
     description: 'Uplifting, appreciating and celebrating others.',
-    template: 'You lifted the team when [situation]. Your appreciation and support meant so much...',
+    template: 'Thank you for encouraging the heart. You noticed the effort and lifted everyone’s spirits when [describe the situation]. Your care and appreciation made a real difference to the team.',
     emoji: '❤️',
     color: '#EF4444'
   },
   {
     name: 'Inspiring a Shared Vision',
     description: 'Painting a compelling picture of the future.',
-    template: 'You inspired us with your vision for [project/goal]. The way you helped everyone see what is possible...',
+    template: 'Thank you for inspiring a shared vision. You helped us see what is possible and brought us together around a common goal when [describe the situation]. Your vision moved us forward.',
     emoji: '🔭',
     color: '#A855F7'
   },
   {
     name: 'Modelling the Way',
     description: 'Leading by example and setting the standard.',
-    template: 'You led by example when [situation]. Your standards and integrity set the bar for all of us...',
+    template: 'Thank you for modelling the way. You led by example and set the standard through your actions when [describe the situation]. You showed us what great looks like.',
     emoji: '🧭',
     color: '#14B8A6'
   }

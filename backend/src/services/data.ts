@@ -19,11 +19,11 @@ import { getStore, NewRecognition, StoredRecognition } from '../store';
 
 /** The organisation's Five Practices of Exemplary Leadership (name -> emoji / colour / template). */
 export const DEFAULT_BADGES: Badge[] = [
-  { name: 'Challenging the Process', emoji: '🚀', color: '#F97316', description: 'Seeking new ways to improve and taking smart risks.', template: 'Thank you for challenging the status quo when [situation]. Your willingness to try a new approach made a real difference...' },
-  { name: 'Enabling Others to Act', emoji: '🤝', color: '#3B82F6', description: 'Building trust and empowering the team.', template: 'You empowered the team by [action]. The way you built trust and brought people together...' },
-  { name: 'Encouraging the Heart', emoji: '❤️', color: '#EF4444', description: 'Uplifting, appreciating and celebrating others.', template: 'You lifted the team when [situation]. Your appreciation and support meant so much...' },
-  { name: 'Inspiring a Shared Vision', emoji: '🔭', color: '#A855F7', description: 'Painting a compelling picture of the future.', template: 'You inspired us with your vision for [project/goal]. The way you helped everyone see what is possible...' },
-  { name: 'Modelling the Way', emoji: '🧭', color: '#14B8A6', description: 'Leading by example and setting the standard.', template: 'You led by example when [situation]. Your standards and integrity set the bar for all of us...' }
+  { name: 'Challenging the Process', emoji: '🚀', color: '#F97316', description: 'Seeking new ways to improve and taking smart risks.', template: 'Thank you for challenging the process. You questioned how things are done and tried a better way when [describe the situation]. Your courage to experiment made a real impact.' },
+  { name: 'Enabling Others to Act', emoji: '🤝', color: '#3B82F6', description: 'Building trust and empowering the team.', template: 'Thank you for enabling others to act. You built trust and gave the team what we needed to succeed when [describe the situation]. Because of you, we delivered together.' },
+  { name: 'Encouraging the Heart', emoji: '❤️', color: '#EF4444', description: 'Uplifting, appreciating and celebrating others.', template: 'Thank you for encouraging the heart. You noticed the effort and lifted everyone’s spirits when [describe the situation]. Your care and appreciation made a real difference to the team.' },
+  { name: 'Inspiring a Shared Vision', emoji: '🔭', color: '#A855F7', description: 'Painting a compelling picture of the future.', template: 'Thank you for inspiring a shared vision. You helped us see what is possible and brought us together around a common goal when [describe the situation]. Your vision moved us forward.' },
+  { name: 'Modelling the Way', emoji: '🧭', color: '#14B8A6', description: 'Leading by example and setting the standard.', template: 'Thank you for modelling the way. You led by example and set the standard through your actions when [describe the situation]. You showed us what great looks like.' }
 ];
 
 const toRecognition = (s: StoredRecognition): Recognition => {
