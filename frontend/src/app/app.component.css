@@ -3,109 +3,203 @@
   min-height: 100vh;
 }
 
-.app-toolbar {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-  color: #fff;
-  padding: 0 24px;
-  box-shadow: 0 12px 32px rgba(31, 74, 158, 0.2);
+.layout {
+  display: flex;
+  min-height: 100vh;
 }
 
-.brand {
+/* ---- Sidebar ---- */
+.sidebar {
+  width: 248px;
+  flex-shrink: 0;
+  background: var(--surface-card);
+  border-right: 1px solid rgba(148, 163, 184, 0.2);
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  padding: 20px 14px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+.sidebar-top {
+  padding: 6px 6px 16px;
 }
 
 .brand-logo {
-  display: grid;
+  background: #fff;
+  border-radius: 12px;
+  padding: 8px 12px;
+  display: inline-grid;
   place-items: center;
-  background: #ffffff;
-  border-radius: 10px;
-  padding: 5px 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .brand-logo img {
-  height: 26px;
+  height: 30px;
   display: block;
 }
 
-.brand-text {
-  font-size: 20px;
-  font-weight: 600;
+.brand-title {
+  margin-top: 12px;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 0.5px;
+  color: var(--color-primary);
 }
 
-.nav-links {
-  margin-left: 24px;
+.side-nav {
   display: flex;
-  gap: 12px;
-}
-
-.nav-links a {
-  color: #fff;
-  font-weight: 500;
-  opacity: 0.85;
-}
-
-.nav-links a.active,
-.nav-links a:hover {
-  opacity: 1;
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.spacer {
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
   flex: 1;
 }
 
-.toolbar-actions {
+.side-nav a {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.side-nav a mat-icon {
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
+}
+
+.side-nav a:hover {
+  background: rgba(31, 74, 158, 0.08);
+  color: var(--text-primary);
+}
+
+.side-nav a.active {
+  background: rgba(31, 74, 158, 0.12);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.sidebar-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.footer-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sidebar-footer .mat-icon,
+.footer-controls button {
+  color: var(--text-secondary);
 }
 
 .user-pill {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.16);
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: rgba(31, 74, 158, 0.08);
 }
 
 .user-pill img {
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid rgba(255, 255, 255, 0.6);
 }
 
 .user-pill .name {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
+  color: var(--text-primary);
 }
 
-.user-pill .dept {
-  font-size: 12px;
-  opacity: 0.8;
-}
-
-.app-shell {
+/* ---- Content ---- */
+.content {
+  flex: 1;
+  min-width: 0;
   padding: 28px;
   background: var(--surface-background);
-  min-height: calc(100vh - 64px);
   transition: background 0.3s ease;
 }
 
-@media (max-width: 960px) {
-  .nav-links {
+/* ---- Dark mode: the primary blue is too dark on the dark sidebar ---- */
+body.theme-dark .brand-title,
+body.theme-dark .side-nav a.active {
+  color: #93b4ff;
+}
+
+body.theme-dark .side-nav a.active {
+  background: rgba(147, 180, 255, 0.14);
+}
+
+body.theme-dark .side-nav a:hover {
+  background: rgba(147, 180, 255, 0.1);
+}
+
+/* ---- Responsive: sidebar becomes a top bar on narrow screens ---- */
+@media (max-width: 860px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: static;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .sidebar-top {
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .brand-title {
+    margin-top: 0;
+  }
+
+  .side-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 0;
+    flex: 1 1 100%;
+    order: 3;
+  }
+
+  .side-nav a span {
     display: none;
   }
 
-  .app-shell {
-    padding: 20px;
+  .sidebar-footer {
+    flex-direction: row;
+    align-items: center;
+    border-top: none;
+    padding-top: 0;
+    margin-left: auto;
+  }
+
+  .content {
+    padding: 18px;
   }
 }

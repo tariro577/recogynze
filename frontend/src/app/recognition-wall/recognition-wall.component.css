@@ -84,6 +84,11 @@
 
 .message {
   color: var(--text-primary);
+  line-height: 1.55;
+}
+
+:host-context(body.theme-dark) .spotlight {
+  color: #f5c451;
 }
 
 .reactions {

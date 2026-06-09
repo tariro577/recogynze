@@ -85,3 +85,51 @@ app-teams-config {
         transition-duration: 0.001ms !important;
     }
 }
+
+/* Dark mode: Angular Material uses a light theme, so without these overrides the
+   text you type (recognition message, search) is dark-on-dark and invisible. */
+body.theme-dark .mat-mdc-input-element,
+body.theme-dark .mat-mdc-form-field textarea,
+body.theme-dark .mat-mdc-form-field input,
+body.theme-dark .mat-mdc-select-value-text,
+body.theme-dark .mat-mdc-select-value,
+body.theme-dark .mat-mdc-form-field {
+    color: var(--text-primary);
+    caret-color: var(--text-primary);
+}
+
+body.theme-dark .mdc-floating-label,
+body.theme-dark .mat-mdc-floating-label,
+body.theme-dark .mat-mdc-form-field-hint,
+body.theme-dark .mat-mdc-select-placeholder,
+body.theme-dark .mat-mdc-select-arrow,
+body.theme-dark .mat-mdc-form-field-icon-suffix,
+body.theme-dark .mat-mdc-form-field-icon-prefix {
+    color: var(--text-secondary) !important;
+}
+
+body.theme-dark .mdc-text-field--outlined .mdc-notched-outline > * {
+    border-color: rgba(148, 163, 184, 0.4);
+}
+
+body.theme-dark .mat-mdc-text-field-wrapper {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+/* Dropdown / autocomplete panels render at the body level via the CDK overlay. */
+body.theme-dark .mat-mdc-autocomplete-panel,
+body.theme-dark .mat-mdc-select-panel,
+body.theme-dark .mat-mdc-menu-panel {
+    background: var(--surface-card);
+    color: var(--text-primary);
+}
+
+body.theme-dark .mat-mdc-option,
+body.theme-dark .mat-mdc-option .mdc-list-item__primary-text {
+    color: var(--text-primary);
+}
+
+body.theme-dark .mat-mdc-option:hover,
+body.theme-dark .mat-mdc-option.mdc-list-item--selected {
+    background: rgba(147, 180, 255, 0.12);
+}
