@@ -10,6 +10,13 @@
   position: relative;
 }
 
+/* Hero sits on a blue gradient — keep all its text white instead of the
+   global grey paragraph colour. */
+.hero,
+.hero p {
+  color: #fff;
+}
+
 .hero::after {
   content: '';
   position: absolute;
