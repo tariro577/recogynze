@@ -11,6 +11,7 @@ import { RecognitionWallComponent } from './recognition-wall/recognition-wall.co
 import { ProfileComponent } from './profile/profile.component';
 import { LeaderboardComponent } from './leaderboard/leaderboard.component';
 import { TeamsConfigComponent } from './teams-config/teams-config.component';
+import { AssistantComponent } from './assistant/assistant.component';
 import { AppRoutingModule } from './app-routing.module';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -41,7 +42,8 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     RecognitionWallComponent,
     ProfileComponent,
     LeaderboardComponent,
-    TeamsConfigComponent
+    TeamsConfigComponent,
+    AssistantComponent
   ],
   imports: [
     BrowserModule,

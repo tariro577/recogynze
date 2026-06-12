@@ -1,5 +1,5 @@
 import { ReactionType, UserProfile } from '../types';
-import { NewRecognition, StoredRecognition, Store } from './types';
+import { NewComment, NewRecognition, StoredComment, StoredRecognition, Store } from './types';
 import { SEED_EMPLOYEES, SEED_RECOGNITIONS } from './seed';
 
 /**
@@ -9,6 +9,7 @@ import { SEED_EMPLOYEES, SEED_RECOGNITIONS } from './seed';
  */
 export class MemoryStore implements Store {
   private recognitions: StoredRecognition[] = [];
+  private comments: StoredComment[] = [];
   private employees: UserProfile[] = [];
   private reactionKeys = new Set<string>();
   private counter = 1000;
@@ -16,6 +17,7 @@ export class MemoryStore implements Store {
   async init(): Promise<void> {
     this.employees = [...SEED_EMPLOYEES];
     this.recognitions = SEED_RECOGNITIONS.map(r => ({ ...r, reactions: { ...r.reactions } }));
+    this.comments = [];
   }
 
   async listRecognitions(): Promise<StoredRecognition[]> {
@@ -46,6 +48,34 @@ export class MemoryStore implements Store {
     recognition.reactions[type] = (recognition.reactions[type] || 0) + 1;
   }
 
+  async listComments(recognitionId: string): Promise<StoredComment[]> {
+    return this.comments
+      .filter(c => c.recognitionId === recognitionId)
+      .map(c => ({ ...c }));
+  }
+
+  async addComment(input: NewComment): Promise<StoredComment | null> {
+    const recognition = this.recognitions.find(r => r.id === input.recognitionId);
+    if (!recognition) {
+      return null;
+    }
+    const record: StoredComment = {
+      id: `cmt-${this.counter++}`,
+      ...input,
+      date: new Date().toISOString()
+    };
+    this.comments.push(record);
+    return { ...record };
+  }
+
+  async countComments(): Promise<Record<string, number>> {
+    const counts: Record<string, number> = {};
+    this.comments.forEach(c => {
+      counts[c.recognitionId] = (counts[c.recognitionId] || 0) + 1;
+    });
+    return counts;
+  }
+
   async listEmployees(): Promise<UserProfile[]> {
     return [...this.employees];
   }
@@ -63,6 +93,7 @@ export class MemoryStore implements Store {
 
   async clearRecognitions(): Promise<void> {
     this.recognitions = [];
+    this.comments = [];
     this.reactionKeys.clear();
   }
 }

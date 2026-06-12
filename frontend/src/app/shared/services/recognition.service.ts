@@ -3,7 +3,7 @@ import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { AuthService } from './auth.service';
-import { Badge, LeaderboardStats, Recognition, RecognitionFilters, RecognitionPayload, RecognitionStats, UserProfile } from '../models';
+import { Badge, LeaderboardStats, Recognition, RecognitionComment, RecognitionFilters, RecognitionPayload, RecognitionStats, UserProfile } from '../models';
 
 const DEFAULT_BADGES: Badge[] = [
   {
@@ -92,6 +92,20 @@ export class RecognitionService {
 
   addReaction(recognitionId: string, type: string): Observable<void> {
     return this.api.post<void>(`/recognitions/${recognitionId}/reactions`, { type });
+  }
+
+  getComments(recognitionId: string): Observable<RecognitionComment[]> {
+    return this.api
+      .get<RecognitionComment[]>(`/recognitions/${recognitionId}/comments`)
+      .pipe(catchError(() => of([])));
+  }
+
+  addComment(recognitionId: string, message: string): Observable<RecognitionComment> {
+    return this.api.post<RecognitionComment>(`/recognitions/${recognitionId}/comments`, { message });
+  }
+
+  getDepartments(): Observable<string[]> {
+    return this.api.get<string[]>('/departments').pipe(catchError(() => of([])));
   }
 
   searchUsers(query: string): Observable<UserProfile[]> {

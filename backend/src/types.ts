@@ -32,6 +32,17 @@ export interface Recognition {
   date: string;
   reactions: ReactionCounts;
   department?: string;
+  commentCount: number;
+}
+
+export interface RecognitionComment {
+  id: string;
+  recognitionId: string;
+  authorName: string;
+  authorEmail: string;
+  authorPhotoUrl?: string;
+  message: string;
+  date: string;
 }
 
 export interface RecognitionFilters {
@@ -74,4 +85,8 @@ export interface LeaderboardStats {
   topRecogniser: LeaderboardEntry | null;
   mostRecognised: LeaderboardEntry | null;
   departmentStats: DepartmentStat[];
+  /** Employees ranked by recognitions received this week (top 10). */
+  topReceivers: LeaderboardEntry[];
+  /** Employees ranked by recognitions given this week (top 10). */
+  topGivers: LeaderboardEntry[];
 }

@@ -23,6 +23,7 @@ const make = (overrides: Partial<Recognition>): Recognition => ({
   date: daysAgo(1),
   reactions: { clap: 0, trophy: 0, heart: 0 },
   department: 'Engineering',
+  commentCount: 0,
   ...overrides
 });
 
@@ -58,7 +59,11 @@ describe('matchesFilters', () => {
   it('matches by badge, department and time', () => {
     expect(matchesFilters(item, { badge: 'inno' }, NOW)).toBe(true);
     expect(matchesFilters(item, { badge: 'leadership' }, NOW)).toBe(false);
-    expect(matchesFilters(item, { department: 'engineer' }, NOW)).toBe(true);
+    // department comes from a dropdown of exact names: exact (case-insensitive)
+    // match only, so "Digital" can't also match "Digital Services"
+    expect(matchesFilters(item, { department: 'engineering' }, NOW)).toBe(true);
+    expect(matchesFilters(item, { department: 'Engineering' }, NOW)).toBe(true);
+    expect(matchesFilters(item, { department: 'engineer' }, NOW)).toBe(false);
     expect(matchesFilters(item, { timeRange: 'week' }, NOW)).toBe(true);
   });
 
@@ -113,6 +118,30 @@ describe('computeLeaderboard', () => {
     expect(board.topRecogniser?.recognitionsGiven).toBe(2);
     expect(board.mostRecognised?.name).toBe('B');
     expect(board.mostRecognised?.recognitionsReceived).toBe(2);
-    expect(board.departmentStats.find(d => d.department === 'Engineering')?.sent).toBe(3);
+    // department on a recognition is the receiver's department
+    expect(board.departmentStats.find(d => d.department === 'Engineering')?.received).toBe(3);
+    // senders unknown to the (empty) directory are attributed to General, not
+    // to the receiving department
+    expect(board.departmentStats.find(d => d.department === 'General')?.sent).toBe(3);
+    expect(board.departmentStats.find(d => d.department === 'Engineering')?.sent).toBe(0);
+  });
+
+  it('attributes sent counts to the sender department from the employee directory', () => {
+    const employees = [
+      { id: 'a', displayName: 'A', email: 'A@X', department: 'Finance' },
+      { id: 'b', displayName: 'B', email: 'b@x', department: 'Engineering' }
+    ];
+    const data = [
+      // mixed-case sender email must still resolve and bucket as one person
+      make({ id: '1', senderEmail: 'a@x', senderName: 'A', receiverEmail: 'b@x', receiverName: 'B', date: daysAgo(1) }),
+      make({ id: '2', senderEmail: 'A@X', senderName: 'A', receiverEmail: 'b@x', receiverName: 'B', date: daysAgo(2) })
+    ];
+    const board = computeLeaderboard(data, NOW, employees);
+    expect(board.topRecogniser?.recognitionsGiven).toBe(2);
+    expect(board.topRecogniser?.department).toBe('Finance');
+    expect(board.departmentStats.find(d => d.department === 'Finance')?.sent).toBe(2);
+    expect(board.departmentStats.find(d => d.department === 'Engineering')?.received).toBe(2);
+    expect(board.topReceivers.length).toBe(1);
+    expect(board.topGivers.length).toBe(1);
   });
 });

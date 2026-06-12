@@ -2,6 +2,7 @@ import {
   Badge,
   LeaderboardStats,
   Recognition,
+  RecognitionComment,
   RecognitionFilters,
   RecognitionStats,
   ReactionType,
@@ -15,7 +16,7 @@ import {
   paginate,
   sortNewestFirst
 } from './aggregations';
-import { getStore, NewRecognition, StoredRecognition } from '../store';
+import { getStore, NewComment, NewRecognition, StoredComment, StoredRecognition } from '../store';
 
 /** The organisation's Five Practices of Exemplary Leadership (name -> emoji / colour / template). */
 export const DEFAULT_BADGES: Badge[] = [
@@ -26,7 +27,7 @@ export const DEFAULT_BADGES: Badge[] = [
   { name: 'Modelling the Way', emoji: '🧭', color: '#14B8A6', description: 'Leading by example and setting the standard.', template: 'Thank you for modelling the way. You led by example and set the standard through your actions when [describe the situation]. You showed us what great looks like.' }
 ];
 
-const toRecognition = (s: StoredRecognition): Recognition => {
+const toRecognition = (s: StoredRecognition, commentCount = 0): Recognition => {
   const badgeMeta = DEFAULT_BADGES.find(b => b.name === s.badgeName);
   return {
     id: s.id,
@@ -46,14 +47,28 @@ const toRecognition = (s: StoredRecognition): Recognition => {
     message: s.message,
     date: s.date,
     reactions: s.reactions,
-    department: s.department
+    department: s.department,
+    commentCount
   };
 };
 
+const toComment = (c: StoredComment): RecognitionComment => ({
+  id: c.id,
+  recognitionId: c.recognitionId,
+  authorName: c.authorName,
+  authorEmail: c.authorEmail,
+  authorPhotoUrl: avatarFor(c.authorName),
+  message: c.message,
+  date: c.date
+});
+
 const loadAll = async (): Promise<Recognition[]> => {
   const store = await getStore();
-  const stored = await store.listRecognitions();
-  return sortNewestFirst(stored.map(toRecognition));
+  const [stored, commentCounts] = await Promise.all([
+    store.listRecognitions(),
+    store.countComments()
+  ]);
+  return sortNewestFirst(stored.map(s => toRecognition(s, commentCounts[s.id] || 0)));
 };
 
 export const getBadges = async (): Promise<Badge[]> => DEFAULT_BADGES;
@@ -81,9 +96,38 @@ export const addReaction = async (
   await store.addReaction(recognitionId, userEmail, type);
 };
 
+export const getComments = async (recognitionId: string): Promise<RecognitionComment[]> => {
+  const store = await getStore();
+  return (await store.listComments(recognitionId)).map(toComment);
+};
+
+/** Returns null when the recognition doesn't exist. */
+export const addComment = async (input: NewComment): Promise<RecognitionComment | null> => {
+  const store = await getStore();
+  const created = await store.addComment(input);
+  return created ? toComment(created) : null;
+};
+
 export const getStats = async (): Promise<RecognitionStats> => computeStats(await loadAll());
 
-export const getLeaderboard = async (): Promise<LeaderboardStats> => computeLeaderboard(await loadAll());
+export const getLeaderboard = async (): Promise<LeaderboardStats> => {
+  const store = await getStore();
+  const [all, employees] = await Promise.all([loadAll(), store.listEmployees()]);
+  return computeLeaderboard(all, Date.now(), employees);
+};
+
+/** Distinct departments across the employee directory and existing recognitions. */
+export const listDepartments = async (): Promise<string[]> => {
+  const store = await getStore();
+  const [employees, recognitions] = await Promise.all([
+    store.listEmployees(),
+    store.listRecognitions()
+  ]);
+  const departments = new Set<string>();
+  employees.forEach(e => e.department && departments.add(e.department));
+  recognitions.forEach(r => r.department && departments.add(r.department));
+  return [...departments].sort((a, b) => a.localeCompare(b));
+};
 
 const withAvatar = (user: UserProfile): UserProfile => ({
   ...user,

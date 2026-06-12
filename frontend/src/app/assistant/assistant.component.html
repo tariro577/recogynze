@@ -1,0 +1,49 @@
+<div class="assistant-panel" *ngIf="open">
+  <div class="panel-header">
+    <div class="title">
+      <mat-icon>smart_toy</mat-icon>
+      <div>
+        <strong>Recognyze Assistant</strong>
+        <span>Here to help with recognitions</span>
+      </div>
+    </div>
+    <button mat-icon-button (click)="toggle()" aria-label="Close assistant">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="thread" #thread>
+    <div
+      class="bubble"
+      *ngFor="let message of messages"
+      [class.user]="message.role === 'user'"
+      [class.assistant]="message.role === 'assistant'"
+    >
+      {{ message.content }}
+    </div>
+    <div class="bubble assistant typing" *ngIf="sending">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+
+  <div class="suggestions" *ngIf="messages.length <= 1">
+    <button *ngFor="let suggestion of suggestions" (click)="ask(suggestion)">{{ suggestion }}</button>
+  </div>
+
+  <div class="composer">
+    <input
+      type="text"
+      placeholder="Ask a question…"
+      [(ngModel)]="draft"
+      (keyup.enter)="send()"
+      [disabled]="sending"
+    />
+    <button mat-icon-button color="primary" (click)="send()" [disabled]="sending || !draft.trim()" aria-label="Send">
+      <mat-icon>send</mat-icon>
+    </button>
+  </div>
+</div>
+
+<button class="assistant-fab" mat-fab color="primary" (click)="toggle()" aria-label="Open assistant" matTooltip="Ask the Recognyze assistant">
+  <mat-icon>{{ open ? 'close' : 'smart_toy' }}</mat-icon>
+</button>

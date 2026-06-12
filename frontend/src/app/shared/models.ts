@@ -22,6 +22,25 @@ export interface Recognition {
   date: string;
   reactions: Record<ReactionType, number>;
   department?: string;
+  commentCount?: number;
+}
+
+export interface RecognitionComment {
+  id: string;
+  recognitionId: string;
+  authorName: string;
+  authorEmail: string;
+  authorPhotoUrl?: string;
+  message: string;
+  date: string;
+}
+
+export interface AssistantMessage {
+  role: 'user' | 'assistant';
+  content: string;
+  /** True for client-generated bubbles (greeting, error notices) that must not
+   *  be replayed to the model as real conversation turns. */
+  isLocal?: boolean;
 }
 
 export interface RecognitionStats {
@@ -56,6 +75,10 @@ export interface LeaderboardStats {
   topRecogniser: LeaderboardEntry | null;
   mostRecognised: LeaderboardEntry | null;
   departmentStats: DepartmentStat[];
+  /** Employees ranked by recognitions received this week (top 10). */
+  topReceivers?: LeaderboardEntry[];
+  /** Employees ranked by recognitions given this week (top 10). */
+  topGivers?: LeaderboardEntry[];
 }
 
 export interface UserProfile {

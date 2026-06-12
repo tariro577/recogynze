@@ -1,17 +1,21 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import {
+  addComment,
   addReaction,
   clearRecognitions,
   createRecognition,
   getBadges,
+  getComments,
   getLeaderboard,
   getRecognitions,
   getStats,
+  listDepartments,
   listEmployees,
   searchUsers,
   setEmployees
 } from '../services/data';
 import { containsAppearanceComment } from '../utils/moderation';
+import { askAssistant, AssistantTurn, isAssistantEnabled, moderateWithAi } from '../services/ai';
 import { ReactionType, UserProfile } from '../types';
 
 const router = Router();
@@ -31,6 +35,17 @@ const VALID_REACTIONS: ReactionType[] = ['clap', 'trophy', 'heart'];
  */
 const callerEmail = (req: Request): string =>
   String(req.header('x-user-email') || req.body?.senderEmail || '').trim();
+
+/** Display names travel URI-encoded (HTTP headers are ISO-8859-1 only). */
+const decodeHeader = (value: string): string => {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+};
+
+const MAX_RECOGNITION_LENGTH = 420;
 
 router.get(
   '/recognitions',
@@ -60,10 +75,27 @@ router.post(
       res.status(400).json({ message: 'receiverEmail, badgeName and message are required.' });
       return;
     }
+    if (String(body.message).length > MAX_RECOGNITION_LENGTH) {
+      res.status(400).json({
+        message: `Recognition messages are limited to ${MAX_RECOGNITION_LENGTH} characters.`
+      });
+      return;
+    }
     if (containsAppearanceComment(body.message)) {
       res.status(400).json({
         message:
           'Recognition should celebrate professional contributions, not appearance. Please focus on their work and impact!'
+      });
+      return;
+    }
+    // Second line of defence: the AI gateway screens for appearance comments,
+    // out-of-scope content and anything inappropriate. Fails open if unreachable.
+    const verdict = await moderateWithAi(String(body.message), 'recognition');
+    if (!verdict.allowed) {
+      res.status(400).json({
+        message:
+          verdict.reason ||
+          'Recognition should celebrate professional contributions. Please focus on their work and impact!'
       });
       return;
     }
@@ -93,6 +125,108 @@ router.post(
     const email = callerEmail(req) || 'anonymous';
     await addReaction(id, type, email);
     res.status(204).send();
+  })
+);
+
+const MAX_COMMENT_LENGTH = 500;
+
+router.get(
+  '/recognitions/:id/comments',
+  handle(async (req, res) => {
+    res.status(200).json(await getComments(req.params.id));
+  })
+);
+
+router.post(
+  '/recognitions/:id/comments',
+  handle(async (req, res) => {
+    const authorEmail = callerEmail(req);
+    const authorName = decodeHeader(
+      String(req.header('x-user-name') || req.body?.authorName || '')
+    ).trim();
+    if (!authorEmail || !authorName) {
+      res.status(400).json({ message: 'Commenter identity is missing.' });
+      return;
+    }
+    const message = String(req.body?.message || '').trim();
+    if (!message) {
+      res.status(400).json({ message: 'Comment message is required.' });
+      return;
+    }
+    if (message.length > MAX_COMMENT_LENGTH) {
+      res.status(400).json({ message: `Comments are limited to ${MAX_COMMENT_LENGTH} characters.` });
+      return;
+    }
+    if (containsAppearanceComment(message)) {
+      res.status(400).json({
+        message: 'Comments should stay professional. Please focus on their work and impact!'
+      });
+      return;
+    }
+    const verdict = await moderateWithAi(message, 'comment');
+    if (!verdict.allowed) {
+      res.status(400).json({
+        message: verdict.reason || 'Comments should stay professional and appropriate.'
+      });
+      return;
+    }
+    const created = await addComment({
+      recognitionId: req.params.id,
+      authorName,
+      authorEmail,
+      message
+    });
+    if (!created) {
+      res.status(404).json({ message: 'Recognition not found.' });
+      return;
+    }
+    res.status(201).json(created);
+  })
+);
+
+router.get(
+  '/departments',
+  handle(async (_req, res) => {
+    res.status(200).json(await listDepartments());
+  })
+);
+
+// ---- AI assistant ----
+// Small in-app helper ("how do I give a recognition?"). History comes from the
+// client; identity isn't needed. Disabled (503) when no AI gateway is configured.
+router.post(
+  '/assistant',
+  handle(async (req, res) => {
+    if (!isAssistantEnabled()) {
+      res.status(503).json({
+        message: 'The assistant is not available right now. Please ask your administrator to configure the AI gateway.'
+      });
+      return;
+    }
+    const input = Array.isArray(req.body?.messages) ? req.body.messages : [];
+    const messages: AssistantTurn[] = input
+      .filter(
+        (m: any) =>
+          m &&
+          (m.role === 'user' || m.role === 'assistant') &&
+          typeof m.content === 'string' &&
+          m.content.trim()
+      )
+      .map((m: any) => ({ role: m.role, content: String(m.content).trim() }));
+    if (!messages.length || messages[messages.length - 1].role !== 'user') {
+      res.status(400).json({ message: 'Provide messages ending with a user question.' });
+      return;
+    }
+    try {
+      const reply = await askAssistant(messages);
+      res.status(200).json({ reply });
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('[recognyze] assistant request failed:', (err as Error).message);
+      res.status(502).json({
+        message: 'The assistant could not be reached. Please try again in a moment.'
+      });
+    }
   })
 );
 

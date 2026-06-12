@@ -1,4 +1,4 @@
-<section class="leaderboard-shell" *ngIf="stats">
+<section class="leaderboard-shell" *ngIf="stats && (stats.topRecogniser || stats.mostRecognised)">
   <div class="top-row">
     <div class="leader-card">
       <h3>🏆 Top Recogniser of the Week</h3>
@@ -17,6 +17,51 @@
         <div>
           <strong>{{ stats.mostRecognised.name }}</strong>
           <p>{{ stats.mostRecognised.recognitionsReceived }} recognitions received</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="breakdown" *ngIf="stats.departmentStats.length">
+    <h3>🏢 Department insights</h3>
+    <p class="section-hint">Which departments are giving and receiving the most recognition this week.</p>
+    <div class="dept-row" *ngFor="let dept of stats.departmentStats">
+      <div class="dept-name">{{ dept.department }}</div>
+      <div class="dept-bar-track">
+        <div class="dept-bar" [style.width.%]="departmentBarWidth(dept)"></div>
+      </div>
+      <div class="dept-counts">
+        <span title="Recognitions received">⭐ {{ dept.received }} received</span>
+        <span title="Recognitions sent">📤 {{ dept.sent }} sent</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="breakdown" *ngIf="stats.topReceivers?.length">
+    <h3>🧑‍🤝‍🧑 Top employees this week</h3>
+    <div class="people-grid">
+      <div class="people-column">
+        <h4>Most recognised</h4>
+        <div class="people-row" *ngFor="let entry of stats.topReceivers; let i = index">
+          <span class="rank">{{ i + 1 }}</span>
+          <img [src]="avatarUrl(entry.name, entry.photoUrl)" alt="Employee" />
+          <div class="people-info">
+            <strong>{{ entry.name }}</strong>
+            <span>{{ entry.department }}</span>
+          </div>
+          <span class="people-count">{{ entry.recognitionsReceived }}</span>
+        </div>
+      </div>
+      <div class="people-column" *ngIf="stats.topGivers?.length">
+        <h4>Top recognisers</h4>
+        <div class="people-row" *ngFor="let entry of stats.topGivers; let i = index">
+          <span class="rank">{{ i + 1 }}</span>
+          <img [src]="avatarUrl(entry.name, entry.photoUrl)" alt="Employee" />
+          <div class="people-info">
+            <strong>{{ entry.name }}</strong>
+            <span>{{ entry.department }}</span>
+          </div>
+          <span class="people-count">{{ entry.recognitionsGiven }}</span>
         </div>
       </div>
     </div>

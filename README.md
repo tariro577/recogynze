@@ -14,10 +14,18 @@ publish it is enabling custom app upload in Teams.
 - Animated landing page with live stats counters and a "Start Recognising" CTA.
 - Recognition form with people picker, badge templates, content moderation,
   confetti, sound toggle, and character counter.
-- Recognition wall with infinite scroll, spotlight card, filters, and reactions.
+- Recognition wall with spotlight card, badge/department/time filters,
+  reactions (👏 🏆 ❤️), and **comments under every recognition**.
+- **AI content moderation**: recognitions and comments are screened by an AI
+  model (via the company AI gateway) for out-of-scope content — e.g. appearance
+  compliments like "nice shoes" or "beautiful smile" — on top of the built-in
+  keyword check. Fails open (keyword check only) if the gateway is unreachable.
+- **AI assistant**: a floating in-app chat that answers questions like
+  "How do I give a recognition?" or "What do the badges mean?".
 - Profile tab with badge shelf, given-vs-received chart, and streaks.
-- Leaderboard with top recogniser, most recognised, badge breakdown, and
-  department stats.
+- Leaderboard with top recogniser, most recognised, badge breakdown,
+  **department insights** (which departments give/receive the most) and
+  **top employees** rankings.
 - Dark/light mode, micro-animations, empty states, and mobile responsiveness.
 
 ## Project structure
@@ -46,6 +54,31 @@ recognyze/
 > Trust note: identity is client-asserted (from the Teams context) rather than a
 > verified token, which is appropriate for an internal recognition wall. If you
 > later want verified SSO, that requires an Azure AD app + one-time admin consent.
+
+## AI gateway (moderation + assistant)
+
+Both AI features call the company's Anthropic-compatible AI gateway through the
+official `@anthropic-ai/sdk`. Configure it in `backend/.env` (see
+`backend/.env.example`):
+
+```bash
+ANTHROPIC_API_KEY=sk-...
+ANTHROPIC_BASE_URL=https://your-gateway-host:port
+ANTHROPIC_MODEL=Qwen3.5-122b
+# AI_MODERATION=false   # optional: keep the assistant but skip AI moderation
+```
+
+Notes:
+
+- Without these variables the app still works — keyword moderation only, and the
+  assistant replies with a friendly "not available" message (HTTP 503).
+- AI moderation **fails open**: if the gateway is down or times out, the
+  recognition/comment is allowed as long as it passes the keyword check, so the
+  gateway can never block people from recognising each other.
+- The gateway's TLS chain is missing its intermediate certificate, so the npm
+  `dev`/`start` scripts set `NODE_EXTRA_CA_CERTS=certs/digicert-global-g2-tls-ca1.pem`
+  (a public DigiCert intermediate bundled in the repo). If you deploy elsewhere,
+  set the same env var, or fix the chain on the gateway.
 
 ## Run locally
 
