@@ -116,16 +116,14 @@ export const getLeaderboard = async (): Promise<LeaderboardStats> => {
   return computeLeaderboard(all, Date.now(), employees);
 };
 
-/** Distinct departments across the employee directory and existing recognitions. */
+/** Distinct departments from the employee directory — the directory is the
+ *  single source of truth, so renamed/retired departments on old recognitions
+ *  don't linger in the filter dropdown. */
 export const listDepartments = async (): Promise<string[]> => {
   const store = await getStore();
-  const [employees, recognitions] = await Promise.all([
-    store.listEmployees(),
-    store.listRecognitions()
-  ]);
+  const employees = await store.listEmployees();
   const departments = new Set<string>();
   employees.forEach(e => e.department && departments.add(e.department));
-  recognitions.forEach(r => r.department && departments.add(r.department));
   return [...departments].sort((a, b) => a.localeCompare(b));
 };
 

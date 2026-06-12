@@ -9,11 +9,14 @@ import { StoredRecognition } from './types';
  * When using Postgres, these seed the `employees` table on first run; edit them
  * there afterwards. When using the in-memory store, this is the live list.
  */
+/** Canonical departments: Finance, Risk, Customer Experience, Commercial, NOC, Technology Services. */
 export const SEED_EMPLOYEES: UserProfile[] = [
-  { id: 'tariro', displayName: 'Tariro Chogumaira', email: 'chogumairatariro@gmail.com', department: 'Digital' },
-  { id: 'sample-1', displayName: 'Rudo Madziva', email: 'rudo.madziva@econet.co.zw', department: 'Engineering' },
+  { id: 'tariro', displayName: 'Tariro Chogumaira', email: 'chogumairatariro@gmail.com', department: 'Technology Services' },
+  { id: 'sample-1', displayName: 'Rudo Madziva', email: 'rudo.madziva@econet.co.zw', department: 'NOC' },
   { id: 'sample-2', displayName: 'Tendai Moyo', email: 'tendai.moyo@econet.co.zw', department: 'Customer Experience' },
-  { id: 'sample-3', displayName: 'Chipo Ncube', email: 'chipo.ncube@econet.co.zw', department: 'Finance' }
+  { id: 'sample-3', displayName: 'Chipo Ncube', email: 'chipo.ncube@econet.co.zw', department: 'Finance' },
+  { id: 'sample-4', displayName: 'Takudzwa Dube', email: 'takudzwa.dube@econet.co.zw', department: 'Risk' },
+  { id: 'sample-5', displayName: 'Nyasha Sibanda', email: 'nyasha.sibanda@econet.co.zw', department: 'Commercial' }
 ];
 
 const daysAgo = (n: number): string => new Date(Date.now() - n * 24 * 60 * 60 * 1000).toISOString();
@@ -28,7 +31,7 @@ export const SEED_RECOGNITIONS: StoredRecognition[] = [
     receiverEmail: 'rudo.madziva@econet.co.zw',
     badgeName: 'Enabling Others to Act',
     message: 'Thank you for jumping in on the migration over the weekend — you kept the whole team unblocked.',
-    department: 'Engineering',
+    department: 'NOC',
     reactions: { clap: 3, trophy: 1, heart: 2 },
     date: daysAgo(1)
   },
