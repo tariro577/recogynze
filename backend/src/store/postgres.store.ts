@@ -51,15 +51,13 @@ export class PostgresStore implements Store {
     await sql`
       CREATE INDEX IF NOT EXISTS recognitions_id_text_idx ON recognitions ((id::text))`;
 
-    // Seed the directory once so the people-picker isn't empty.
-    const { rows } = await sql`SELECT COUNT(*)::int AS count FROM employees`;
-    if (rows[0]?.count === 0) {
-      for (const e of SEED_EMPLOYEES) {
-        await sql`
-          INSERT INTO employees (email, name, department)
-          VALUES (${e.email}, ${e.displayName}, ${e.department})
-          ON CONFLICT (email) DO NOTHING`;
-      }
+    // Sync the canonical employee list on every deploy so edits to seed.ts
+    // take effect after a redeploy without needing a manual DB change.
+    for (const e of SEED_EMPLOYEES) {
+      await sql`
+        INSERT INTO employees (email, name, department)
+        VALUES (${e.email}, ${e.displayName}, ${e.department})
+        ON CONFLICT (email) DO UPDATE SET name = EXCLUDED.name, department = EXCLUDED.department`;
     }
   }
 
