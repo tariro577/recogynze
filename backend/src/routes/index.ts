@@ -16,6 +16,7 @@ import {
 } from '../services/data';
 import { containsAppearanceComment } from '../utils/moderation';
 import { askAssistant, AssistantTurn, isAssistantEnabled, moderateWithAi } from '../services/ai';
+import { notifyTeams } from '../services/notify';
 import { ReactionType, UserProfile } from '../types';
 
 const router = Router();
@@ -100,7 +101,7 @@ router.post(
       return;
     }
 
-    const created = await createRecognition({
+    const input = {
       senderName: body.senderName,
       senderEmail: body.senderEmail,
       receiverName: body.receiverName,
@@ -108,7 +109,9 @@ router.post(
       badgeName: body.badgeName,
       message: body.message,
       department: body.department || 'General'
-    });
+    };
+    const created = await createRecognition(input);
+    notifyTeams(input).catch(() => undefined);
     res.status(201).json(created);
   })
 );
