@@ -16,6 +16,11 @@ export async function notifyTeams(recognition: NewRecognition): Promise<void> {
 
   const emoji = BADGE_EMOJIS[recognition.badgeName] || '🏅';
 
+  // Deep link opens the Recognyze tab directly inside Teams.
+  const appId = '8868741b-f101-469a-9829-d445dfae0c7f';
+  const entityId = 'recognyze-home';
+  const deepLink = `https://teams.microsoft.com/l/entity/${appId}/${entityId}`;
+
   // Power Automate (Teams Workflows) webhook expects an Adaptive Card payload.
   const card = {
     type: 'message',
@@ -47,6 +52,13 @@ export async function notifyTeams(recognition: NewRecognition): Promise<void> {
               text: recognition.message,
               wrap: true,
               spacing: 'Small'
+            }
+          ],
+          actions: [
+            {
+              type: 'Action.OpenUrl',
+              title: '🏆 Open in Recognyze',
+              url: deepLink
             }
           ]
         }
