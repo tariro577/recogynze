@@ -1,13 +1,5 @@
 import { NewRecognition } from '../store/types';
 
-const BADGE_COLORS: Record<string, string> = {
-  'Challenging the Process':  'F97316',
-  'Enabling Others to Act':   '3B82F6',
-  'Encouraging the Heart':    'EF4444',
-  'Inspiring a Shared Vision':'A855F7',
-  'Modelling the Way':        '14B8A6'
-};
-
 const BADGE_EMOJIS: Record<string, string> = {
   'Challenging the Process':   '🚀',
   'Enabling Others to Act':    '🤝',
@@ -23,18 +15,41 @@ export async function notifyTeams(recognition: NewRecognition): Promise<void> {
   }
 
   const emoji = BADGE_EMOJIS[recognition.badgeName] || '🏅';
-  const color = BADGE_COLORS[recognition.badgeName] || '6366F1';
 
+  // Power Automate (Teams Workflows) webhook expects an Adaptive Card payload.
   const card = {
-    '@type': 'MessageCard',
-    '@context': 'http://schema.org/extensions',
-    themeColor: color,
-    summary: `${recognition.senderName} recognised ${recognition.receiverName}`,
-    sections: [
+    type: 'message',
+    attachments: [
       {
-        activityTitle: `${emoji} **${recognition.senderName}** recognised **${recognition.receiverName}**`,
-        activitySubtitle: `${recognition.badgeName} · ${recognition.receiverName}'s team: ${recognition.department}`,
-        activityText: recognition.message
+        contentType: 'application/vnd.microsoft.card.adaptive',
+        contentUrl: null,
+        content: {
+          $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+          type: 'AdaptiveCard',
+          version: '1.5',
+          body: [
+            {
+              type: 'TextBlock',
+              text: `${emoji} **${recognition.senderName}** recognised **${recognition.receiverName}**`,
+              wrap: true,
+              size: 'Medium',
+              weight: 'Bolder'
+            },
+            {
+              type: 'TextBlock',
+              text: `${recognition.badgeName} · ${recognition.department}`,
+              wrap: true,
+              isSubtle: true,
+              spacing: 'None'
+            },
+            {
+              type: 'TextBlock',
+              text: recognition.message,
+              wrap: true,
+              spacing: 'Small'
+            }
+          ]
+        }
       }
     ]
   };
