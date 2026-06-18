@@ -7,10 +7,10 @@ import { StoredRecognition } from './types'; // kept for memory store compatibil
  * all that's needed to update the directory.
  */
 export const SEED_EMPLOYEES: UserProfile[] = [
-  { id: 'kudzai.derera', displayName: 'Kudzai Derera', email: 'kudzai.derera@econetai.co.zw', department: 'Technology Services' },
-  { id: 'adrian.madhigi', displayName: 'Adrian Madhigi', email: 'adrian.madhigi@econetai.co.zw', department: 'Technology Services' },
-  { id: 'tariro.mashawi', displayName: 'Tariro Mashawi', email: 'tariro.mashawi@econet.co.zw', department: 'Technology Services' },
-  { id: 'thabani.dlamini', displayName: 'Thabani Dlamini', email: 'thabani.dlamini@econetai.co.zw', department: 'Technology Services' },
+  { id: 'kudzai.derera', displayName: 'Kudzai Derera', email: 'kudzai.derera@econetai.co.zw', department: 'Econet AI' },
+  { id: 'adrian.madhigi', displayName: 'Adrian Madhigi', email: 'adrian.madhigi@econetai.co.zw', department: 'Econet AI' },
+  { id: 'tariro.mashawi', displayName: 'Tariro Mashawi', email: 'tariro.mashawi@econet.co.zw', department: 'Econet AI' },
+  { id: 'thabani.dlamini', displayName: 'Thabani Dlamini', email: 'thabani.dlamini@econetai.co.zw', department: 'Econet AI' },
   { id: 'loice.sibanda', displayName: 'Loice Sibanda', email: 'loice.sibanda@econet.co.zw', department: 'People & Culture' },
   { id: 'mandhla.mavolwane', displayName: 'Mandhla Mavolwane', email: 'mandhla.mavolwane@econet.co.zw', department: 'People & Culture' },
   { id: 'kudzai.jana', displayName: 'Kudzai Jana', email: 'kudzai.jana@econet.co.zw', department: 'People & Culture' },
