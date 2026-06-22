@@ -3,6 +3,7 @@ import { ReactionType, UserProfile } from '../types';
 import { aggregateReactions, emptyReactions } from '../services/aggregations';
 import { NewComment, NewRecognition, StoredComment, StoredRecognition, Store } from './types';
 import { SEED_EMPLOYEES } from './seed';
+import { syncUsersFromGraph } from '../services/graph';
 
 /**
  * Durable store backed by Vercel Postgres (Neon). Activated automatically when a
@@ -51,9 +52,11 @@ export class PostgresStore implements Store {
     await sql`
       CREATE INDEX IF NOT EXISTS recognitions_id_text_idx ON recognitions ((id::text))`;
 
-    // Sync the canonical employee list on every deploy so edits to seed.ts
-    // take effect after a redeploy without needing a manual DB change.
-    for (const e of SEED_EMPLOYEES) {
+    // Prefer Graph API users (full org directory with real departments).
+    // Fall back to the manual seed when Graph is not configured.
+    const graphUsers = await syncUsersFromGraph();
+    const employees = graphUsers.length ? graphUsers : SEED_EMPLOYEES;
+    for (const e of employees) {
       await sql`
         INSERT INTO employees (email, name, department)
         VALUES (${e.email}, ${e.displayName}, ${e.department})
